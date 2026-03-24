@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/SsrsClient/SsrsClient.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SsrsClient.Tests/SsrsClient.Tests.csproj" />
+  </Folder>
+</Solution>
