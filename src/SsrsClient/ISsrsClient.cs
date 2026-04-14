@@ -9,7 +9,7 @@ namespace SsrsClient
     public interface ISsrsClient
     {
         // Reports
-        Task<IReadOnlyList<CatalogItem>> ListReportsAsync(string folderPath, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<CatalogItem>> ListReportsAsync(string folderPath = "", CancellationToken cancellationToken = default);
         Task<CatalogItem> GetReportAsync(string reportPath, CancellationToken cancellationToken = default);
         Task<byte[]> DownloadReportAsync(string reportPath, CancellationToken cancellationToken = default);
         Task<CatalogItem> UploadReportAsync(string folderPath, string reportName, byte[] rdlContent, bool overwrite = false, CancellationToken cancellationToken = default);

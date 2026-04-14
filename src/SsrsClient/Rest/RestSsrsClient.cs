@@ -34,15 +34,20 @@ namespace SsrsClient.Rest
         // --- Reports ---
 
         public async Task<IReadOnlyList<CatalogItem>> ListReportsAsync(
-            string folderPath,
+            string folderPath = "",
             CancellationToken cancellationToken = default
         )
         {
-            ValidatePath(folderPath);
-            var encoded = Uri.EscapeDataString(folderPath);
-            var request = BuildRequest(HttpMethod.Get,
-                $"Reports?$filter=Path eq '{encoded}'&$select=Id,Name,Path,Type,CreatedDate,ModifiedDate,Hidden");
+            string requestPath = $"/Reports";
 
+            if (!string.IsNullOrWhiteSpace(folderPath))
+            {
+            ValidatePath(folderPath);
+                string encodedFolderPath = Uri.EscapeDataString(folderPath);
+                requestPath += $"?$filter=contains(Path,'{encodedFolderPath}')";
+            }
+
+            var request = BuildRequest(HttpMethod.Get, requestPath);
             var response = await SendAsync(request, cancellationToken);
             var result = await DeserializeAsync<ODataResponse<CatalogItem>>(response, cancellationToken);
 
@@ -190,7 +195,8 @@ namespace SsrsClient.Rest
             string relativeUrl
         )
         {
-            var request = new HttpRequestMessage(method, relativeUrl);
+            var fullUrl = $"{_httpClient.BaseAddress.ToString().TrimEnd('/')}/{relativeUrl.TrimStart('/')}";
+            var request = new HttpRequestMessage(method, fullUrl);
             _authProvider.ApplyHeaders(request);
             return request;
         }
@@ -200,6 +206,7 @@ namespace SsrsClient.Rest
             CancellationToken cancellationToken
         )
         {
+            Console.WriteLine(request.RequestUri);
             var response = await _httpClient.SendAsync(request, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
