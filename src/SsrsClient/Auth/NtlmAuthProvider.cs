@@ -26,6 +26,9 @@ namespace SsrsClient.Auth
             handler.UseDefaultCredentials =
                 _credentials == CredentialCache.DefaultNetworkCredentials;
 
+            handler.PreAuthenticate = true;
+            handler.AllowAutoRedirect = false;
+
             if (_credentials is NetworkCredential nc)
                 handler.Credentials = nc;
         }
