@@ -1,4 +1,5 @@
 ﻿using SsrsClient.Rest.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace SsrsClient
         // Reports
         Task<IReadOnlyList<CatalogItem>> ListReportsAsync(string folderPath = "", CancellationToken cancellationToken = default);
         Task<CatalogItem> GetReportAsync(string reportPath, CancellationToken cancellationToken = default);
+        Task<CatalogItem> GetReportAsync(Guid reportId, CancellationToken cancellationToken = default);
         Task<byte[]> DownloadReportAsync(string reportPath, CancellationToken cancellationToken = default);
         Task<CatalogItem> UploadReportAsync(string folderPath, string reportName, byte[] rdlContent, bool overwrite = false, CancellationToken cancellationToken = default);
         Task DeleteReportAsync(string reportPath, CancellationToken cancellationToken = default);

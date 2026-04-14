@@ -74,6 +74,22 @@ namespace SsrsClient.Rest
                 : item;
         }
 
+        public async Task<CatalogItem> GetReportAsync(
+            Guid reportId,
+            CancellationToken cancellationToken = default
+        )
+        {
+            string requestPath = $"/Reports";
+
+            string encodedReportId = Uri.EscapeDataString(reportId.ToString());
+
+            var request = BuildRequest(HttpMethod.Get, $"{requestPath}({encodedReportId})");
+            var response = await SendAsync(request, cancellationToken);
+            var result = await DeserializeAsync<CatalogItem>(response, cancellationToken);
+
+            return result ?? throw new SsrsException($"Report not found: {encodedReportId}", 404);
+        }
+
         public async Task<byte[]> DownloadReportAsync(
             string reportPath,
             CancellationToken cancellationToken = default
