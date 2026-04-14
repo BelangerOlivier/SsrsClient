@@ -42,7 +42,7 @@ namespace SsrsClient.Rest
 
             if (!string.IsNullOrWhiteSpace(folderPath))
             {
-            ValidatePath(folderPath);
+                ValidatePath(folderPath);
                 string encodedFolderPath = Uri.EscapeDataString(folderPath);
                 requestPath += $"?$filter=contains(Path,'{encodedFolderPath}')";
             }
@@ -59,11 +59,12 @@ namespace SsrsClient.Rest
             CancellationToken cancellationToken = default
         )
         {
-            ValidatePath(reportPath);
-            var encoded = Uri.EscapeDataString(reportPath);
-            var request = BuildRequest(HttpMethod.Get,
-                $"Reports?$filter=Path eq '{encoded}'");
+            string requestPath = $"/Reports";
 
+            ValidatePath(reportPath);
+            string encodedReportPath = Uri.EscapeDataString(reportPath);
+
+            var request = BuildRequest(HttpMethod.Get, $"{requestPath}?$filter=Path eq '{encodedReportPath}'");
             var response = await SendAsync(request, cancellationToken);
             var result = await DeserializeAsync<ODataResponse<CatalogItem>>(response, cancellationToken);
 
@@ -227,6 +228,8 @@ namespace SsrsClient.Rest
             CancellationToken cancellationToken
         )
         {
+            //var a = await response.Content.ReadAsStringAsync();
+            //Console.WriteLine(a);
             var result = await response.Content.ReadFromJsonAsync<T>(JsonOptions, cancellationToken);
             return object.Equals(result, default(T))
                 ? throw new SsrsException("Received null response from SSRS.")
@@ -235,8 +238,6 @@ namespace SsrsClient.Rest
 
         private static void ValidatePath(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Path cannot be null or empty.", nameof(path));
             if (!path.StartsWith("/"))
                 throw new ArgumentException("Path must start with '/'.", nameof(path));
         }
